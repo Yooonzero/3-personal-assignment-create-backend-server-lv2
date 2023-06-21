@@ -1,4 +1,4 @@
-const jws = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const User = require('../schemas/user.js');
 
 module.exports = async (req, res, next) => {

@@ -13,6 +13,11 @@ app.use(express.urlencoded({ extended: false })); // URL_encoded형식으로 전
 app.use(cookieParser());
 app.use('/', [indexRouter]);
 
+app.get('/', (req, res) => {
+    console.log('1차 확인');
+    res.status(200).json({ msg: 'hi' });
+});
+
 app.listen(port, () => {
     console.log(port, '포트로 서버가 열렸어요!');
 });

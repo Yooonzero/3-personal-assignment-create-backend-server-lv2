@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('cookie-parser');
 const User = require('../schemas/user.js');
+const jwt = require('cookie-parser');
 const authMiddleware = require('../middlewares/auth-middleware.js');
 
 // 회원가입 API
@@ -9,7 +9,7 @@ router.post('/auth', async (req, res) => {
     const { nickname, password, confirm } = req.body;
     try {
         // 닉네임 중복 확인
-        const existNickname = User.findOne({ nickname });
+        const existNickname = await User.findOne({ nickname });
         if (existNickname) {
             res.status(412).json({
                 errorMessage: '이미 존재하는 닉네임 입니다.',
