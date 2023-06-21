@@ -7,21 +7,25 @@ const authMiddleware = require('../middlewares/auth-middleware.js');
 router.post('/', authMiddleware, async (req, res) => {
     const { title, content } = req.body;
     const { nickname, _id } = res.locals.user;
-    console.log(nickname, _id);
+    // console.log(nickname, _id); // test1, new ObjectId("649338b6c360e48dae75bdbc")
 
+    // console.log(Object.keys(req.body)); // [ 'title', 'content' ]
+    // title과 content 값이 없을 때,
     if (Object.keys(req.body).length === 0) {
         return res.status(412).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
     }
+    // 제목의 입력값이 없을 때,
     if (title === '' || title === undefined) {
         return res.status(412).json({ errorMessage: '게시글 제목의 형식이 올바르지 않습니다.' });
     }
+    // 내용의 입력값이 없을 때,
     if (content === '' || content === undefined) {
         return res.status(412).json({ errorMessage: '게시글 내용의 형식이 올바르지 않습니다.' });
     }
 
     try {
-        const post = new Posts({ userId, nickname, title, content });
-        await post.save();
+        const post = new Posts({ userId: _id, nickname, title, content }); // body와 locals.user 값을 가지는 새로운 객체를 post에 할당,
+        await post.save(); // DB에 저장한다.
         res.status(201).json({ message: '게시글이 성공적으로 작성되었습니다.' });
     } catch (error) {
         console.log(error.message);
@@ -32,6 +36,7 @@ router.post('/', authMiddleware, async (req, res) => {
 // 2. 전체 post(게시글) 목록 조회
 router.get('/', async (req, res) => {
     try {
+        // 생성날짜 기준으로 내림차순 정렬하고, posts에 할당.
         const posts = await Posts.find().sort('-createdAt').exec();
         const data = {
             posts: posts.map((a) => {
@@ -59,7 +64,7 @@ router.get('/:postId', async (req, res) => {
         const post = await Posts.findById({ _id: postId }).exec();
         const data = {
             post: {
-                postId: post.postId,
+                // postId: post.postId,
                 userId: post.userId,
                 nickname: post.nickname,
                 title: post.title,
@@ -81,6 +86,7 @@ router.put('/:postId', authMiddleware, async (req, res) => {
     const { title, content } = req.body;
     const { _id } = res.locals.user;
 
+    console.log(Object.values(req.params)); // [ '64934e5ae0ba669301ba9000' ]
     try {
         if (Object.keys(req.body).length === 0 || Object.values(req.params).length === 0) {
             return res.status(412).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
@@ -106,14 +112,18 @@ router.put('/:postId', authMiddleware, async (req, res) => {
 });
 
 // 5. post(게시글) 삭제
-router.delete('/:postId', async (req, res) => {
+router.delete('/:postId', authMiddleware, async (req, res) => {
     const { postId } = req.params;
-    const { _id } = req.locals.user;
+    const { _id } = res.locals.user;
+
     try {
         const post = Posts.findById({ postId });
         if (!post) {
             return res.status(403).json({ errorMessage: '게시글이 존재하지 않습니다..' });
         }
+        console.log(post.userId);
+        console.log(_id.toString());
+        console.log(_id);
         if (!_id || post.userId !== _id.toString()) {
             return res.status(403).json({ errorMessage: '게시글 삭제 권한이 존재하지 않습니다.' });
         }

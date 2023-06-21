@@ -45,7 +45,6 @@ router.post('/login', async (req, res) => {
     const { nickname, password } = req.body; // body에 입력값을 받고,
     try {
         const user = await User.findOne({ nickname }); // DB에서 입력한 nickname을 가진 user를 찾아 변수에 할당하고,
-        console.log(user); // null
 
         // DB에 해당하는 nickname이 없거나, 사용자의 password가 일치하지 않는경우.
         if (!nickname || password !== user.password) {
@@ -57,7 +56,7 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign({ userId: user.userId }, 'customized-secret-key');
 
         // 쿠키 생성
-        res.cookie('Authorization', `Bearer ${token}`); // Authorization이라는 이름의 bearer 토큰 생성.
+        res.cookie('Authorization', `Bearer ${token}`); // Authorization이라는 이름의 bearer타입의 토큰 생성.
         res.status(200).json({ token });
     } catch (error) {
         console.log(error.message);

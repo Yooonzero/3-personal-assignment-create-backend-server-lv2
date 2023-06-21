@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
 const User = require('../schemas/user.js');
+const jwt = require('jsonwebtoken');
 
 module.exports = async (req, res, next) => {
     const { Authorization } = req.cookies;
@@ -11,7 +11,9 @@ module.exports = async (req, res, next) => {
 
     // authType === bearer 검증
     // authToken 검증
-    if (authType !== 'bearer' || !authToken) {
+    // console.log(authType);
+    // console.log(authToken);
+    if (authType !== 'Bearer' || !authToken) {
         res.status(403).json({ errorMessage: '로그인이 필요한 기능입니다.' });
         return;
     }
