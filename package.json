@@ -1,11 +1,11 @@
 {
-    "name": "3-personal-assignment-create-backend-server",
+    "name": "3-personal-assignment-create-backend-server-lv2",
     "version": "1.0.0",
     "description": "",
     "main": "app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon --watch 3-personal-assignment-create-backend-server/ 3-personal-assignment-create-backend-server/app.js"
+        "start": "nodemon --watch 3-personal-assignment-create-backend-server-lv2/ 3-personal-assignment-create-backend-server-lv2/app.js"
     },
     "keywords": [],
     "author": "",
@@ -14,5 +14,6 @@
         "express": "^4.18.2",
         "mongoose": "^7.2.4"
     },
-    "type": "commonjs"
+    "type": "commonjs",
+    "devDependencies": {}
 }
