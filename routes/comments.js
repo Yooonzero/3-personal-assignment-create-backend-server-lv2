@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Posts = require('../schemas/post.js');
 const Comments = require('../schemas/comment.js');
+const authMiddleware = require('../middlewares/auth-middleware.js');
 
 // 댓글 작성
 router.post('/comments/:postId', async (req, res) => {
