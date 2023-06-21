@@ -4,26 +4,21 @@ const commentSchema = new mongoose.Schema({
     postId: {
         type: String,
         required: true,
-        unique: true,
     },
-    user: {
+    userId: {
         type: String,
         required: true,
-        unique: true,
     },
-    password: {
+    nickname: {
         type: Number,
         required: true,
-        unique: true,
     },
     content: {
         type: String,
         required: true,
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
 });
+
+commentSchema.set('timestamps', { createdAt: true, updatedAt: true });
 
 module.exports = mongoose.model('Comments', commentSchema);
