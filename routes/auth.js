@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../schemas/user.js');
-const jwt = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
 // 회원가입 API
 router.post('/auth', async (req, res) => {
@@ -54,10 +54,10 @@ router.post('/login', async (req, res) => {
         }
 
         // jwt 생성
-        const token = jwt.sign({ userId: user.userId }, 'customized-secret-key'); //
+        const token = jwt.sign({ userId: user.userId }, 'customized-secret-key');
 
         // 쿠키 생성
-        res.cookie('Authorization', `Bearer ${token}`);
+        res.cookie('Authorization', `Bearer ${token}`); // Authorization이라는 이름의 bearer 토큰 생성.
         res.status(200).json({ token });
     } catch (error) {
         console.log(error.message);
