@@ -7,7 +7,9 @@ const authMiddleware = require('../middlewares/auth-middleware.js');
 router.post('/', authMiddleware, async (req, res) => {
     const { title, content } = req.body;
     const { nickname, _id } = res.locals.user;
-    // console.log(nickname, _id); // test1, new ObjectId("649338b6c360e48dae75bdbc")
+    // 아래 콘솔로그 확인을 해보니 local.user는 User테이블에서 현재 로그인되어 있는  위치한 _id필드의 값 또
+    // console.log(nickname, userId); // test1 ,649338b6c360e48dae75bdbc
+    // console.log(nickname, _id);    // test1 ,new ObjectId("649338b6c360e48dae75bdbc")
 
     // console.log(Object.keys(req.body)); // [ 'title', 'content' ]
     // title과 content 값이 없을 때,
@@ -64,7 +66,7 @@ router.get('/:postId', async (req, res) => {
         const post = await Posts.findById({ _id: postId }).exec();
         const data = {
             post: {
-                // postId: post.postId,
+                postId: post._id,
                 userId: post.userId,
                 nickname: post.nickname,
                 title: post.title,
@@ -86,7 +88,7 @@ router.put('/:postId', authMiddleware, async (req, res) => {
     const { title, content } = req.body;
     const { _id } = res.locals.user;
 
-    console.log(Object.values(req.params)); // [ '64934e5ae0ba669301ba9000' ]
+    console.log(Object.values(req.params)); // [ '6493eabcc5f367206d23993d' ]
     try {
         if (Object.keys(req.body).length === 0 || Object.values(req.params).length === 0) {
             return res.status(412).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
@@ -114,22 +116,19 @@ router.put('/:postId', authMiddleware, async (req, res) => {
 // 5. post(게시글) 삭제
 router.delete('/:postId', authMiddleware, async (req, res) => {
     const { postId } = req.params;
-    const { _id } = res.locals.user;
-
+    const { _id } = res.locals.user; // 로그인된 user의 _id 필드 값. // new ObjectId("649338b6c360e48dae75bdbc")
     try {
-        const post = Posts.findById({ postId });
+        const post = await Posts.findById(postId); // postId라는 인자를 {}객체형태로 감싸서 전달할 경우, _id필드에 대한 Object 형변환에 실패한다.
         if (!post) {
             return res.status(403).json({ errorMessage: '게시글이 존재하지 않습니다..' });
         }
-        console.log(post.userId);
-        console.log(_id.toString());
-        console.log(_id);
         if (!_id || post.userId !== _id.toString()) {
             return res.status(403).json({ errorMessage: '게시글 삭제 권한이 존재하지 않습니다.' });
         }
         await Posts.deleteOne({ _id: postId }).catch((err) => {
             res.status(401).json({ errorMessage: '게시글이 삭제되지 않았습니다.' });
         });
+        return res.status(200).json({ message: '게시글을 성공적으로 삭제하였습니다.' });
     } catch (error) {
         console.log(error.message);
         res.status(400).json({ errorMessage: '게시글 삭제에 실패하였습니다.' });
