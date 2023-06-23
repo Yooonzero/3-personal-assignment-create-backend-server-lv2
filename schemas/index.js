@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const connect = () => {
     mongoose
-        .connect('mongodb://localhost:27017/3-personal-assignment-create-backend-server')
+        .connect('mongodb://localhost:27017/4-personal-assignment-create-backend-server-lv2')
         .catch((err) => console.log(err));
 };
 

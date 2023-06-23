@@ -50,8 +50,8 @@ router.get('/:postId/comments', async (req, res) => {
                 return {
                     commentId: a._id,
                     userId: a.userId,
-                    comment: a.comment,
                     nickname: a.nickname,
+                    content: a.content,
                     createdAt: a.createdAt,
                     updatedAt: a.updatedAt,
                 };
