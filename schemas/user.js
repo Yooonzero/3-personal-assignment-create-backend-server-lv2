@@ -17,7 +17,7 @@ userSchema.virtual('userId').get(function () {
     return this._id.toHexString();
 });
 
-// user의 정보를 JSON으로 변환할 때 vertual 값이 출력되도록 설정.
+// user의 정보를 JSON으로 변환할 때 virtual 값이 출력되도록 설정.
 userSchema.set('toJSON', { virtuals: true });
 
 module.exports = mongoose.model('User', userSchema);
