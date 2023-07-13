@@ -54,7 +54,7 @@ router.get('/', async (req, res) => {
         };
         res.status(200).json(data);
     } catch (error) {
-        consolelog(error.message);
+        console.log(error.message);
         res.status(400).json({ errorMessage: '게시글 조회에 실패하였습니다.' });
     }
 });
@@ -86,7 +86,7 @@ router.get('/:postId', async (req, res) => {
 router.put('/:postId', authMiddleware, async (req, res) => {
     const { postId } = req.params;
     const { title, content } = req.body;
-    const { _id } = res.locals.user;
+    const { userId } = res.locals.user;
 
     console.log(Object.values(req.params)); // [ '6493eabcc5f367206d23993d' ]
     try {
@@ -100,7 +100,7 @@ router.put('/:postId', authMiddleware, async (req, res) => {
             return res.status(412).json({ errorMessage: '내용의 형식이 올바르지 않습니다.' });
         }
         const post = await Posts.findOne({ _id: postId });
-        if (post.userId !== _id.toString()) {
+        if (post.userId !== userId.toString()) {
             return res.status(412).json({ errorMessage: '게시글 수정권한이 없습니다.' });
         }
         await Posts.updateOne({ _id: postId }, { $set: { title, content } }).catch((err) => {
@@ -108,7 +108,7 @@ router.put('/:postId', authMiddleware, async (req, res) => {
         });
         res.status(201).json({ message: '게시글을 성공적으로 수정하였습니다.' });
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
         res.status(400).json({ errorMessage: '게시글 수정에 실패하였습니다.' });
     }
 });
